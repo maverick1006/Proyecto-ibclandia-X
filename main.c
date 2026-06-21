@@ -10,6 +10,7 @@ struct Parque
 	struct Zona* zonas[MAX_ZONAS]; /* arreglo no dinamico de zonas */
 	int cantidadZonas;
 	int visitantesHoy;
+	int capacidadMaxima; /* agregado */
 	struct NodoUsuario* headUsuarios; /* lista simple enlazada de usuarios */
 	struct NodoEntrada* raizEntradas; /* arbol binario de busqueda de entradas */
 };
@@ -74,7 +75,11 @@ struct Atraccion
 	int codigo;
 	int capacidadMax;
 	int ocupacionActual;
-	int estado; /*en mantenimiento o funcionando */
+	int estado; /* 1: operativa, 2: mantenimiento, 3: fuera de servicio, 4: cerrada */
+	float estaturaMinima; /* agregado */
+	int edadMinima;       /* agregado */
+	int duracionCiclo;    /* agregado */
+	int totalAtendidos;   /* agregado */
 	struct NodoFila* headFila;
 };
 
@@ -90,6 +95,7 @@ void inicializarParque(struct Parque* parque)
 	/* funcion de inicializado de parque 0 o null hasta input del usuario*/
 	parque->cantidadZonas = 0;
 	parque->visitantesHoy = 0;
+	parque->capacidadMaxima = 10000; /* Asignado valor por defecto para el nuevo campo */
 
 	parque->headUsuarios = (struct NodoUsuario*)malloc(sizeof(struct NodoUsuario));
 	if (parque->headUsuarios == NULL)
@@ -796,7 +802,26 @@ struct Atraccion* crearAtraccion(void)
 	}
 	while (nuevaAtraccion->capacidadMax <= 0);
 
+    /* SOLICITAR LOS NUEVOS CAMPOS DEL STRUCT */
+	do
+	{
+		printf("ingrese la estatura minima en metros (ej: 1.20): ");
+		scanf(" %f", &nuevaAtraccion->estaturaMinima);
+	} while (nuevaAtraccion->estaturaMinima < 0);
 
+	do
+	{
+		printf("ingrese la edad minima: ");
+		scanf(" %d", &nuevaAtraccion->edadMinima);
+	} while (nuevaAtraccion->edadMinima < 0);
+
+	do
+	{
+		printf("ingrese la duracion del ciclo (en minutos): ");
+		scanf(" %d", &nuevaAtraccion->duracionCiclo);
+	} while (nuevaAtraccion->duracionCiclo <= 0);
+
+	nuevaAtraccion->totalAtendidos = 0; /* Inicializamos estadistica */
 	nuevaAtraccion->ocupacionActual = 0;
 	nuevaAtraccion->estado = 1;
 	nuevaAtraccion->headFila = NULL;
@@ -825,6 +850,10 @@ void listarAtracciones(struct NodoAtraccion* headAtracciones)
 		printf("Capacidad maxima: %d\n", rec->datosAtraccion->capacidadMax);
 		printf("Ocupacion actual: %d\n", rec->datosAtraccion->ocupacionActual);
 		printf("Estado: %d\n", rec->datosAtraccion->estado);
+		printf("Estatura minima: %.2f m\n", rec->datosAtraccion->estaturaMinima);
+		printf("Edad minima: %d anos\n", rec->datosAtraccion->edadMinima);
+		printf("Duracion ciclo: %d min\n", rec->datosAtraccion->duracionCiclo);
+		printf("Total atendidos historico: %d\n", rec->datosAtraccion->totalAtendidos);
 		printf("-----------------------------\n");
 		i++;
 		rec = rec->sig;
@@ -1011,7 +1040,6 @@ int validarUsuarioSiPuedeFila(struct Parque* parque, struct Atraccion* atraccion
 	int opcionMover;
 	struct Usuario* usuario = buscarUsuarioPorId(parque, id);
 
-
 	if (usuario == NULL)
 	{
 		printf("usuario no existe\n");
@@ -1021,6 +1049,19 @@ int validarUsuarioSiPuedeFila(struct Parque* parque, struct Atraccion* atraccion
 	if (usuario->estaEnParque == 0)
 	{
 		printf("El usuario no esta dentro del parque\n");
+		return 0;
+	}
+
+    /* VALIDACIONES FISICAS BASADAS EN EL STRUCT ACTUALIZADO */
+	if (usuario->edad < atraccion->edadMinima)
+	{
+		printf("ACCESO DENEGADO: El usuario (%d anos) no cumple con la edad minima (%d anos) requerida.\n", usuario->edad, atraccion->edadMinima);
+		return 0;
+	}
+
+	if (usuario->estatura < atraccion->estaturaMinima)
+	{
+		printf("ACCESO DENEGADO: El usuario (%.2fm) no cumple con la estatura minima (%.2fm) requerida.\n", usuario->estatura, atraccion->estaturaMinima);
 		return 0;
 	}
 
@@ -1101,6 +1142,9 @@ int terminarVueltaAtraccion(struct Atraccion* atraccion)
 
 	personasQueSeVan = atraccion->ocupacionActual;
 	atraccion->ocupacionActual = 0;
+	
+	/* ACTUALIZACION DEL TOTAL DE PERSONAS ATENDIDAS POR ESTA ATRACCION */
+	atraccion->totalAtendidos += personasQueSeVan;
 
 	return personasQueSeVan;
 }
@@ -1680,8 +1724,6 @@ void registrarIngresoUsuarioParque(struct Parque* parque, struct Usuario* usuari
 	parque->visitantesHoy++;
 }
 
-/* usarEntrada fue eliminada: tenia acceso a campo inexistente usuario->entrada
-   El flujo de ingreso se maneja en flujoUsuario() usando registrarIngresoUsuarioParque() */
 
 int contarEntradasUsadas(struct NodoEntrada* raizEntrada)
 {
@@ -2669,9 +2711,13 @@ void menuBuscarAtraccion(struct Parque* parque)
 	printf("atraccion encontrada!\n");
 	printf("Nombre: %s\n", atraccionBuscar->nombre);
 	printf("Codigo: %d\n", atraccionBuscar->codigo);
-	printf("capacidadMax: %d\n", atraccionBuscar->capacidadMax);
-	printf("ocupacionActual: : %d\n", atraccionBuscar->ocupacionActual);
-	printf("estado: %d\n", atraccionBuscar->estado);
+	printf("CapacidadMax: %d\n", atraccionBuscar->capacidadMax);
+	printf("OcupacionActual: : %d\n", atraccionBuscar->ocupacionActual);
+	printf("Estado: %d\n", atraccionBuscar->estado);
+	printf("Estatura Minima: %.2fm\n", atraccionBuscar->estaturaMinima);
+	printf("Edad Minima: %d\n", atraccionBuscar->edadMinima);
+	printf("Duracion Ciclo: %d min\n", atraccionBuscar->duracionCiclo);
+	printf("Total Atendidos: %d\n", atraccionBuscar->totalAtendidos);
 }
 
 void menuModificarAtraccion(struct Parque* parque)
