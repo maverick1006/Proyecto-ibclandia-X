@@ -243,21 +243,17 @@ int validarNombreCompleto(char* nombre)
 
 int validarHorarioZona(char* horario)
 {
-	if (horario == NULL)
-	{
+	int horaInicio, minInicio, horaFin, minFin;
+	if (horario == NULL){
 		return 0;
 	}
-
-	if (strlen(horario) != 11)
-	{
-		return 0;
+	/*Los espacios en " %d:%d - %d:%d" le dicen que ignore si el usuario pone espacios extra. */
+	if (sscanf(horario, " %d:%d - %d:%d", &horaInicio, &minInicio, &horaFin, &minFin) == 4){
+		if (horaInicio >= 0 && horaInicio <= 23 && minInicio >= 0 && minInicio <= 59 &&horaFin >= 0 && horaFin <= 23 && minFin >= 0 && minFin <= 59){
+			return 1; /*buen formato*/
+		}
 	}
-
-	if (horario[2] != ':' || horario[5] != '-' || horario[8] != ':')
-	{
-		return 0;
-	}
-	return 1;
+	return 0; /*Fallo el formato o se ingresaron horas irreales (ej: 25:99)*/
 }
 
 int validarTextoZona(char* texto)
