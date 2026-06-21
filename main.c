@@ -187,8 +187,7 @@ int generarCodigoAtraccion(void)
 
 int validarEdad(int edad)
 {
-	if (edad < 1 || edad > 120)
-	{
+	if (edad < 0 || edad > 120){
 		return 0;
 	}
 	return 1;
