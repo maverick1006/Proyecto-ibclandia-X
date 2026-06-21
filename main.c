@@ -211,31 +211,23 @@ int validarNombreCompleto(char* nombre)
 	int espacio = 0;
 
 	if (nombre == NULL) return 0;
-
-	while (nombre[i] != '\0')
-	{
-		if (nombre[i] == ' ')
-		{
-			if (letrasAntes >= 4)
-			{
+	while (nombre[i] != '\0'){
+		if (nombre[i] == ' '){
+			if (letrasAntes >= 2){
 				espacio = 1;
 			}
 		}
-		else
-		{
-			if (espacio == 0)
-			{
+		else{
+			if (espacio == 0){
 				letrasAntes++;
 			}
-			else
-			{
+			else{
 				letrasDespues++;
 			}
 		}
 		i++;
 	}
-	if (letrasAntes >= 4 && espacio == 1 && letrasDespues >= 4)
-	{
+	if(letrasAntes >= 2 && espacio == 1 && letrasDespues >= 2){
 		return 1;
 	}
 	return 0;
