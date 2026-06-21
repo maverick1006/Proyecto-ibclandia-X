@@ -1646,30 +1646,59 @@ void modificarEntrada(struct Entrada* entrada, int operacion)
 }
 
 /*funcion para agregar un usuario nuevo a la lista de usuarios de una entrada*/
-void agregarUsuarioEntrada(struct Entrada* entrada, struct Usuario* usuario)
+int agregarUsuarioEntrada(struct Entrada* entrada, struct Usuario* usuario)
 {
 	struct NodoUsuarioEntrada* nuevoNodo;
 	struct NodoUsuarioEntrada* rec;
+	int cantidadUsuarios = 0;
+
 	if (entrada == NULL || usuario == NULL) {
-		return;
+		return 0;
 	}
 
+	/* --- INICIO LOGICA DE NEGOCIO --- */
+	/* 1. Validar edad para la entrada Infantil (Tipo 4)*/
+	if (entrada->tipo == 4 && usuario->edad >= 12){
+		printf("RECHAZADO: La entrada Infantil solo es valida para menores de 12 anos. El usuario tiene %d.\n", usuario->edad);
+		return 0; 
+	}
+
+	/* 2. Contar cuantos usuarios ya tiene esta entrada actualmente */
+	rec = entrada->headUsuarios->sig;
+	while (rec != NULL){
+		cantidadUsuarios++;
+		rec = rec->sig;
+	}
+
+	/* 3. Validar capacidad segun el tipo de entrada */
+	/* Tipos: 1=Normal, 2=Pase Rapido, 4=Infantil -> SOLO 1 PERSONA MAXIMO */
+	if ((entrada->tipo == 1 || entrada->tipo == 2 || entrada->tipo == 4) && cantidadUsuarios >= 1){
+		printf("RECHAZADO: Esta entrada es personal y ya tiene a un usuario asignado.\n");
+		return 0; 
+	}
+
+	/* Tipo: 3=Familiar -> LIMITE DE 5 PERSONAS */
+	if (entrada->tipo == 3 && cantidadUsuarios >= 5){
+		printf("RECHAZADO: La entrada Familiar ha alcanzado su limite maximo de 5 personas.\n");
+		return 0; 
+	}
+
+    /*Si pasa todas las validaciones, se agrega normalmente a la memoria*/
 	nuevoNodo = (struct NodoUsuarioEntrada*)malloc(sizeof(struct NodoUsuarioEntrada));
-	if (nuevoNodo == NULL) {
-		return;
+	if (nuevoNodo == NULL){
+		return 0;
 	}
 
 	nuevoNodo->datosUsuario = usuario;
 	nuevoNodo->sig = NULL;
 
 	rec = entrada->headUsuarios;
-
-	while (rec->sig != NULL)
-	{
+	while (rec->sig != NULL){
 		rec = rec->sig;
 	}
 
 	rec->sig = nuevoNodo;
+	return 1; /*Exito*/
 }
 
 void registrarSalidaUsuarioParque(struct Usuario* usuario)
@@ -1860,14 +1889,6 @@ struct Atraccion** listarAtraccionesMalas(struct NodoAtraccion* headAtracciones,
 	return atraccionesMalas;
 }
 
-
-
-/* ============================================================
-   ALGORITMO DE ORDENAMIENTO - Modulo 4
-   Ordena un arreglo de punteros a Atraccion por tamanio de fila
-   de mayor a menor usando algoritmo de burbuja (bubble sort)
-   Responde: que atraccion tiene mas visitantes en espera?
-   ============================================================ */
 int contarPersonasEnFila(struct Atraccion* atraccion)
 {
     int contador = 0;
@@ -2506,65 +2527,60 @@ void menuAgregarUsuarioAEntrada(struct Parque* parque)
 	printf("entradas disponibles: \n");
 	listarTodasLasEntradas(parque->raizEntradas->izq);
 	buscadotmp = menuBuscarEntradaPorId(parque);
-	if (buscadotmp == NULL)
-	{
+	
+	if (buscadotmp == NULL){
 		printf("Entrada no encontrada \n");
 	}
-	else
-	{
+	else{
 		rec = buscadotmp->headUsuarios->sig;
 		printf("Agregar usuario existente o nuevo:\n");
 		printf("1. existente\n");
 		printf("2. nuevo\n");
 		printf("opcion: ");
 		scanf("%d", &selectmp);
-		if (selectmp < 1 || selectmp > 2)
-		{
+		
+		if (selectmp < 1 || selectmp > 2){
 			printf("Error, opcion invalida! \n");
 			return;
 		}
-		else if (selectmp == 1)
-		{
+		else if (selectmp == 1){
 			int idBuscar;
-            struct Usuario* usuariotmp;
+			struct Usuario* usuariotmp;
 
 			listarTodosLosUsuarioSimple(parque);
 
 			printf("Ingrese el id del usuario: ");
 			scanf("%d", &idBuscar);
 
-
 			usuariotmp = buscarUsuarioPorId(parque, idBuscar);
 
-			if (usuariotmp == NULL)
-			{
+			if (usuariotmp == NULL){
 				printf("usuario no encontrado\n");
 				return;
 			}
 
-			while (rec != NULL)
-			{
-				if (usuariotmp->id == rec->datosUsuario->id)
-				{
+			while (rec != NULL){
+				if (usuariotmp->id == rec->datosUsuario->id){
 					printf("el usuario ya se encuentra en la entrada!\n");
 					return;
 				}
 				rec = rec->sig;
 			}
-
-			agregarUsuarioEntrada(buscadotmp, usuariotmp);
-			printf("usuario agregado correctamente a la entrada %d\n", buscadotmp->id);
+			if (agregarUsuarioEntrada(buscadotmp, usuariotmp) == 1) {
+			    printf("usuario agregado correctamente a la entrada %d\n", buscadotmp->id);
+			}
 		}
-		else if (selectmp == 2)
-		{
+		else if (selectmp == 2){
 			struct Usuario* usuariotmp = leerDatosCrearUsuario();
-			if (usuariotmp == NULL)
-			{
+			if (usuariotmp == NULL){
 				printf("Error al crear usuario\n");
 				return;
 			}
+			
 			agregarUsuario(parque, usuariotmp);
-			agregarUsuarioEntrada(buscadotmp, usuariotmp);
+			if (agregarUsuarioEntrada(buscadotmp, usuariotmp) == 1) {
+			    printf("usuario nuevo agregado correctamente a la entrada %d\n", buscadotmp->id);
+			}
 		}
 	}
 }
