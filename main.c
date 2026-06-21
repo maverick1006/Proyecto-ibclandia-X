@@ -794,7 +794,7 @@ struct Atraccion* crearAtraccion(void)
 	{
 		printf("ingrese la estatura minima en metros (ej: 1.20): ");
 		scanf(" %f", &nuevaAtraccion->estaturaMinima);
-	} while (nuevaAtraccion->estaturaMinima < 0);
+	} while (nuevaAtraccion->estaturaMinima < 0.0 || nuevaAtraccion->estaturaMinima > 3.0);
 
 	do
 	{
