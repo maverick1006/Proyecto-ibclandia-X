@@ -2260,91 +2260,72 @@ void menuModificarUsuario(struct Parque* parque)
 	printf("Usuario no ha podido ser modificado.");
 }
 
-void menuAgregarUsuarioAEntrada(struct Parque* parque){
-	struct NodoUsuarioEntrada *rec;
-	int selectmp;
-	struct Entrada* buscadotmp;
-	printf("entradas disponibles: \n");
-	listarTodasLasEntradas(parque->raizEntradas->izq);
-	buscadotmp = menuBuscarEntradaPorId(parque);
-	
-	if (buscadotmp == NULL){
-		printf("Entrada no encontrada \n");
-	}
-	else if (buscadotmp->estado != 1){
-		printf("RECHAZADO: No se pueden agregar usuarios a una entrada que no este activa (estado actual: %s).\n", obtenerEstadoEntrada(buscadotmp->estado));
-	}
-	else{
-		rec = buscadotmp->headUsuarios->sig;
-		printf("Agregar usuario existente o nuevo:\n");
-		printf("1. existente\n");
-		printf("2. nuevo\n");
-		printf("opcion: ");
-		scanf("%d", &selectmp);
-		
-		if (selectmp < 1 || selectmp > 2){
-			printf("Error, opcion invalida! \n");
-			return;
-		}else if (selectmp == 1){
-			int idBuscar;
-			struct Usuario* usuariotmp;
-
-			listarTodosLosUsuarioSimple(parque);
-
-			printf("Ingrese el id del usuario: ");
-			scanf("%d", &idBuscar);
-
-			usuariotmp = buscarUsuarioPorId(parque, idBuscar);
-
-			if (usuariotmp == NULL){
-				printf("usuario no encontrado\n");
-				return;
-			}
-
-			while (rec != NULL){
-				if (usuariotmp->id == rec->datosUsuario->id){
-					printf("el usuario ya se encuentra en la entrada!\n");
-					return;
-				}
-				rec = rec->sig;
-			}
-			if (agregarUsuarioEntrada(buscadotmp, usuariotmp) == 1) {
-			    printf("usuario agregado correctamente a la entrada %d\n", buscadotmp->id);
-			}
+void menuAgregarEntrada(struct Parque* parque)
+{
+	int valortmp;
+	int tipotmp;
+	int estadotmp;
+	struct Entrada* entradaNueva;
+	do
+	{
+		printf("ingresar valor de entrada: ");
+		scanf("%d", &valortmp);
+		if (valortmp <= 0)
+		{
+			printf("valor invalido, debe ser mayor a 0\n");
 		}
-		else if (selectmp == 2){
-			int cantidadUsuarios = 0;
-			struct NodoUsuarioEntrada* tempRec = buscadotmp->headUsuarios->sig;
-			struct Usuario* usuariotmp;
-			
-			while(tempRec != NULL){
-				cantidadUsuarios++;
-				tempRec = tempRec->sig;
-			}
-			
-			if((buscadotmp->tipo == 1 || buscadotmp->tipo == 2 || buscadotmp->tipo == 4) && cantidadUsuarios >= 1){
-				printf("RECHAZADO: Esta entrada es personal y ya esta llena.\n");
-				return;
-			}
-			if(buscadotmp->tipo == 3 && cantidadUsuarios >= 5){
-				printf("RECHAZADO: La entrada Familiar ya alcanzo su limite de 5 personas.\n");
-				return;
-			}
+	}
+	while (valortmp <= 0);
 
-			usuariotmp = leerDatosCrearUsuario();
-			if (usuariotmp == NULL){
-				printf("Error al crear usuario\n");
-				return;
-			}
-			
-			agregarUsuario(parque, usuariotmp);
-			
-			if(agregarUsuarioEntrada(buscadotmp, usuariotmp) == 1){
-			    printf("usuario nuevo agregado correctamente a la entrada %d\n", buscadotmp->id);
-			}else{
-				eliminarUsuario(parque, usuariotmp->id);
-			}
+
+	do
+	{
+		printf("ingresar tipo de entrada: \n");
+		printf("1. Normal\n");
+		printf("2. Pase Rapido\n");
+		printf("3. Familiar\n");
+		printf("4. Infantil\n");
+		scanf("%d", &tipotmp);
+
+		if (tipotmp < 1 || tipotmp > 4)
+		{
+			printf("tipo invalido, ingrese una opcion de las mostradas en pantalla\n");
 		}
+	}
+	while (tipotmp < 1 || tipotmp > 4);
+
+
+	estadotmp = 1;
+
+	entradaNueva = crearEntrada(valortmp, tipotmp, estadotmp);
+
+	if (entradaNueva == NULL)
+	{
+		printf("error al crear entrada\n");
+		return;
+	}
+
+	parque->raizEntradas->izq = agregarEntrada(parque->raizEntradas->izq, entradaNueva);
+	printf("entrada agregada con id: %d\n", entradaNueva->id);
+	printf("Estado inicial: Activa\n");
+}
+
+struct Entrada* menuBuscarEntradaPorId(struct Parque* parque)
+{
+	int idtmp;
+	struct Entrada* buscadotmp = NULL;
+	printf("Ingresa id de la entrada: ");
+	scanf(" %d", &idtmp);
+	buscadotmp = buscarEntradaPorId(parque->raizEntradas->izq, idtmp);
+	if (buscadotmp != NULL)
+	{
+		listarEntrada(buscadotmp);
+		return buscadotmp;
+	}
+	else
+	{
+		printf("Entrada con id: %d no existe!\n", idtmp);
+		return NULL;
 	}
 }
 
@@ -2589,23 +2570,6 @@ void menuAgregarUsuarioAEntrada(struct Parque* parque)
 			}
 		}
 		else if (selectmp == 2){
-			int cantidadUsuarios = 0;
-			struct NodoUsuarioEntrada* tempRec = buscadotmp->headUsuarios->sig;
-			
-			while(tempRec != NULL){
-				cantidadUsuarios++;
-				tempRec = tempRec->sig;
-			}
-			
-			if((buscadotmp->tipo == 1 || buscadotmp->tipo == 2 || buscadotmp->tipo == 4) && cantidadUsuarios >= 1){
-				printf("RECHAZADO: Esta entrada es personal y ya esta llena.\n");
-				return;
-			}
-			if(buscadotmp->tipo == 3 && cantidadUsuarios >= 5){
-				printf("RECHAZADO: La entrada Familiar ya alcanzo su limite de 5 personas.\n");
-				return;
-			}
-
 			struct Usuario* usuariotmp = leerDatosCrearUsuario();
 			if (usuariotmp == NULL){
 				printf("Error al crear usuario\n");
@@ -2613,11 +2577,8 @@ void menuAgregarUsuarioAEntrada(struct Parque* parque)
 			}
 			
 			agregarUsuario(parque, usuariotmp);
-			
-			if(agregarUsuarioEntrada(buscadotmp, usuariotmp) == 1){
+			if (agregarUsuarioEntrada(buscadotmp, usuariotmp) == 1) {
 			    printf("usuario nuevo agregado correctamente a la entrada %d\n", buscadotmp->id);
-			}else{
-				eliminarUsuario(parque, usuariotmp->id);
 			}
 		}
 	}
