@@ -1552,8 +1552,10 @@ int calcularOcupacionZona(struct Zona* zona)
 	while (rec != NULL)
 	{
 		if (rec->datosAtraccion != NULL)
-		{
+		{	/* suma  a los que están en juegos*/
 			contadorOcupacion += rec->datosAtraccion->ocupacionActual;
+			/* suma a los que están en las filas */
+			contadorOcupacion += contarPersonasEnFila(rec->datosAtraccion);
 		}
 		rec = rec->sig;
 	}
