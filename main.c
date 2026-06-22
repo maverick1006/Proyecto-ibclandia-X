@@ -3547,10 +3547,16 @@ void menuIBCLandia(struct Parque* parque)
 
 		scanf(" %d", &num);
 
+		/* validacion para limpiar el buffer*/
+		if (scanf(" %d", &num) != 1){
+			limpiarBuffer();
+			num = -1; /*con esto se obliga al default del switch */
+		}
+
 		switch (num)
 		{
 		default:
-			printf("opcion no valida, mejor suerte a la proxima!\n");
+			printf("opcion no valida!\n");
 			break;
 		case 1:
 			menuUsuarios(parque);
