@@ -2570,6 +2570,23 @@ void menuAgregarUsuarioAEntrada(struct Parque* parque)
 			}
 		}
 		else if (selectmp == 2){
+			int cantidadUsuarios = 0;
+			struct NodoUsuarioEntrada* tempRec = buscadotmp->headUsuarios->sig;
+			
+			while(tempRec != NULL){
+				cantidadUsuarios++;
+				tempRec = tempRec->sig;
+			}
+			
+			if((buscadotmp->tipo == 1 || buscadotmp->tipo == 2 || buscadotmp->tipo == 4) && cantidadUsuarios >= 1){
+				printf("RECHAZADO: Esta entrada es personal y ya esta llena.\n");
+				return;
+			}
+			if(buscadotmp->tipo == 3 && cantidadUsuarios >= 5){
+				printf("RECHAZADO: La entrada Familiar ya alcanzo su limite de 5 personas.\n");
+				return;
+			}
+
 			struct Usuario* usuariotmp = leerDatosCrearUsuario();
 			if (usuariotmp == NULL){
 				printf("Error al crear usuario\n");
@@ -2577,8 +2594,11 @@ void menuAgregarUsuarioAEntrada(struct Parque* parque)
 			}
 			
 			agregarUsuario(parque, usuariotmp);
-			if (agregarUsuarioEntrada(buscadotmp, usuariotmp) == 1) {
+			
+			if(agregarUsuarioEntrada(buscadotmp, usuariotmp) == 1){
 			    printf("usuario nuevo agregado correctamente a la entrada %d\n", buscadotmp->id);
+			}else{
+				eliminarUsuario(parque, usuariotmp->id);
 			}
 		}
 	}
