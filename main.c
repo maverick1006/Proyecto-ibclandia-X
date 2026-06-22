@@ -2041,7 +2041,8 @@ void menuModificarZonas(struct Parque* parque)
 			do
 			{
 				printf("ingrese el nuevo nombre: \n");
-				scanf("%s", nombreNuevo);
+				/* con este nuevo formato ahora se permiten nombres con espacio, ej: zona magica*/
+				scanf(" %49[^\n]", nombreNuevo); 
 			} while (validarTextoZona(nombreNuevo) == 0);
 
 			if (cambiarNombreZona(zonaModificar,nombreNuevo) == 1)
@@ -2058,7 +2059,8 @@ void menuModificarZonas(struct Parque* parque)
 			do
 			{
 				printf("ingrese la nueva tematica de la zona: \n");
-				scanf("%s", tematicaNueva);
+				/* misma mejora que en la opcion 1 del formato*/
+				scanf(" %49[^\n]", tematicaNueva);
 			} while (validarTextoZona(tematicaNueva) == 0);
 
 			if (cambiarTematicaZona(zonaModificar, tematicaNueva) == 1)
