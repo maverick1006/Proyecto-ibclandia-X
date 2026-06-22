@@ -1628,7 +1628,7 @@ void modificarEntrada(struct Entrada* entrada, int operacion)
 
 			if (elemtmp < 1 || elemtmp > 4)
 			{
-				printf("tipo invalido, ingrese una opcion entre 1 y 4 porfavor\n");
+				printf("tipo invalido, ingrese una opcion entre 1 y 4 por favor\n");
 			}
 		}
 		while (elemtmp < 1 || elemtmp > 4);
@@ -2353,7 +2353,7 @@ void menuListarEntradas(struct Parque* parque)
 	int selectmp;
 	printf("1. Listar todas las entradas del sistema\n");
 	printf("2. Listar entrada individual\n");
-	printf("Porfavor digite una opcion valida del menu: ");
+	printf("Por favor digite una opcion valida del menu: ");
 	scanf(" %d", &selectmp);
 	if (selectmp == 1)
 	{
@@ -2379,7 +2379,7 @@ void menuCambiarEstadoEntrada(struct Parque* parque)
 		int estadoActual = buscadotmp->estado;
 		printf("Estado actual de la entrada: %s\n", obtenerEstadoEntrada(estadoActual));
 		printf("1. Activa\n2. Utilizada\n3. Anulada\n4. Vencida\n");
-		printf("Porfavor digite una opcion valida de estado: ");
+		printf("Por favor digite una opcion valida de estado: ");
 		scanf(" %d", &selectmp);
 		if (selectmp < 1 || selectmp > 4)
 		{
@@ -2404,7 +2404,7 @@ void menuModificarEntrada(struct Parque* parque)
 	else
 	{
 		printf("Modificar la entrada: \n1. Valor\n2. Tipo\n3. Estado\n");
-		printf("Porfavor digite una opcion valida para modificar: ");
+		printf("Por favor digite una opcion valida para modificar: ");
 		scanf(" %d", &selectmp);
 		if (selectmp < 1 || selectmp > 3)
 		{
@@ -2780,7 +2780,7 @@ void menuModificarAtraccion(struct Parque* parque)
 		printf("1. nombre\n");
 		printf("2. capacidad maxima\n");
 		printf("3. estado\n");
-		printf("4. ya no quiero seguir modificando\n");
+		printf("4. Finalizar modificaciones y volver\n");
 		printf("ingrese una opciones de las listadas: ");
 		scanf(" %d", &opcion);
 
@@ -3088,7 +3088,7 @@ void menuTerminarVueltaAtraccion(struct Parque* parque)
 			zonaBuscada->ocupacionActual = 0;
 		}
 
-		printf("vuelta terminada! espero hayan disfrutado la atraccion!\n");
+		printf("Vuelta terminada correctamente, atraccion lista para el otro ciclo.\n");
 		printf("personas que salieron de la atraccion: %d\n", resultado);
 	}
 	else if (resultado == 0)
@@ -3251,7 +3251,7 @@ void menuUsuarios(struct Parque* parque)
 		printf("6. Controlar flujo de usuarios\n");
 		printf("7. Volver\n");
 
-		printf("\n Porfavor digite una opcion valida del menu: ");
+		printf("\n Por favor digite una opcion valida del menu: ");
 		scanf(" %d", &num);
 
 		switch (num)
@@ -3301,7 +3301,7 @@ void menuEntradas(struct Parque* parque)
 		printf("7. Agregar usuario a entrada\n");
 		printf("8. Volver\n");
 
-		printf("\n Porfavor digite una opcion valida del menu: ");
+		printf("\n Por favor digite una opcion valida del menu: ");
 		scanf(" %d", &num);
 
 		switch (num)
@@ -3353,7 +3353,7 @@ void menuZonas(struct Parque* parque)
 		printf("5. Listar zonas\n");
 		printf("6. Volver\n");
 
-		printf("\n Porfavor digite una opcion valida del menu: ");
+		printf("\n Por favor digite una opcion valida del menu: ");
 		scanf(" %d", &num);
 
 		switch (num)
@@ -3398,7 +3398,7 @@ void menuAtracciones(struct Parque* parque)
 		printf("5. Listar atracciones\n");
 		printf("6. Volver\n");
 
-		printf("\n Porfavor digite una opcion valida del menu: ");
+		printf("\n Por favor digite una opcion valida del menu: ");
 		scanf(" %d", &num);
 
 		switch (num)
@@ -3445,7 +3445,7 @@ void menuFilas(struct Parque* parque)
 		printf("6. Volver\n");
 
 
-		printf("\n Porfavor digite una opcion valida del menu: ");
+		printf("\n Por favor digite una opcion valida del menu: ");
 		scanf(" %d", &num);
 
 		switch (num)
@@ -3493,7 +3493,7 @@ void menuReportes(struct Parque* parque)
 		printf("8. Atracciones con mayor fila (ordenadas)\n");
 		printf("9. Volver\n");
 
-		printf("\n Porfavor digite una opcion valida del menu: ");
+		printf("\n Por favor digite una opcion valida del menu: ");
 		scanf(" %d", &num);
 
 		switch (num)
@@ -3548,7 +3548,7 @@ void menuIBCLandia(struct Parque* parque)
 		printf("6. Menu de reportes\n");
 		printf("7. Cerrar el parque por el dia\n");
 		printf("8. Salir del menu\n");
-		printf("Porfavor digite una opcion valida del menu: ");
+		printf("Por favor digite una opcion valida del menu: ");
 
 		/* validacion para limpiar el buffer*/
 		if (scanf(" %d", &num) != 1){
