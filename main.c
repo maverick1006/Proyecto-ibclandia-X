@@ -1734,6 +1734,12 @@ void registrarIngresoUsuarioParque(struct Parque* parque, struct Usuario* usuari
 		printf("El usuario ya esta dentro del parque\n");
 		return;
 	}
+	/* utilizamos la nueva variable del struct parque para controlar su tamaño máximo*/
+	if (contarVisitantesEnParque(parque->headUsuarios) >= parque->capacidadMaxima){
+		printf("INGRESO DENEGADO: El parque alcanzo su aforo maximo de (%d visitantes).\n", parque->capacidadMaxima);
+		return;
+	}
+	
 	/*meter el usuario al parque*/
 	usuario->estaEnParque = 1;
 	/*registrar al usuario como visita de hoy*/
