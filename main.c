@@ -1047,13 +1047,13 @@ int validarUsuarioSiPuedeFila(struct Parque* parque, struct Atraccion* atraccion
     /* VALIDACIONES FISICAS BASADAS EN EL STRUCT ACTUALIZADO */
 	if (usuario->edad < atraccion->edadMinima)
 	{
-		printf("ACCESO DENEGADO: El usuario (%d anos) no cumple con la edad minima (%d anos) requerida.\n", usuario->edad, atraccion->edadMinima);
+		printf("ACCESO DENEGADO: El usuario tiene (%d anios) no cumple con la edad minima (%d anios) requerida.\n", usuario->edad, atraccion->edadMinima);
 		return 0;
 	}
 
 	if (usuario->estatura < atraccion->estaturaMinima)
 	{
-		printf("ACCESO DENEGADO: El usuario (%.2fm) no cumple con la estatura minima (%.2fm) requerida.\n", usuario->estatura, atraccion->estaturaMinima);
+		printf("ACCESO DENEGADO: El usuario mide (%.2fm) no cumple con la estatura minima (%.2fm) requerida.\n", usuario->estatura, atraccion->estaturaMinima);
 		return 0;
 	}
 
