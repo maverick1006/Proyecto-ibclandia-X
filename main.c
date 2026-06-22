@@ -1921,17 +1921,14 @@ int contarPersonasEnFila(struct Atraccion* atraccion)
     return contador;
 }
 
-void ordenarAtraccionesPorFila(struct Atraccion** arreglo, int n)
-{
+/* algoritmo de ordenamiento bubble sort para saber que atraccion tiene más visitantes en espera*/
+void ordenarAtraccionesPorFila(struct Atraccion** arreglo, int n){
     int i, j;
     struct Atraccion* temp;
 
-    for (i = 0; i < n - 1; i++)
-    {
-        for (j = 0; j < n - i - 1; j++)
-        {
-            if (contarPersonasEnFila(arreglo[j]) < contarPersonasEnFila(arreglo[j + 1]))
-            {
+    for (i = 0; i < n - 1; i++){
+        for (j = 0; j < n - i - 1; j++){
+            if (contarPersonasEnFila(arreglo[j]) < contarPersonasEnFila(arreglo[j + 1])){
                 temp = arreglo[j];
                 arreglo[j] = arreglo[j + 1];
                 arreglo[j + 1] = temp;
