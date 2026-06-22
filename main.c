@@ -1152,8 +1152,12 @@ int eliminarAtraccion(struct NodoAtraccion* headAtracciones, int codigoAtraccion
 
 	while (actual != NULL)
 	{
-		if (actual->datosAtraccion->codigo == codigoAtraccion)
-		{
+		if(actual->datosAtraccion->codigo == codigoAtraccion){	
+
+			/* agregado, para vaciar fila y ocupacion de atracción antes de ser eliminada*/
+			vaciarFilaAtraccion(actual->datosAtraccion);
+			actual->datosAtraccion->ocupacionActual = 0;
+			
 			actual->ant->sig = actual->sig;
 
 			if (actual->sig != NULL)
