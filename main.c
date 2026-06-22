@@ -89,6 +89,12 @@ struct NodoFila
 	struct NodoFila* sig; /* puntero al siguiente nodo de la fila */
 };
 
+/* función para limpiar el buffer, y hacer el programa más robusto*/
+void limpiarBuffer(void){
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
 void inicializarParque(struct Parque* parque)
 {
 	int i;
