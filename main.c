@@ -300,9 +300,8 @@ struct Usuario* leerDatosCrearUsuario(void)
 		printf("Ingrese el nombre del usuario (Nombre Apellido): ");
 		scanf(" %99[^\n]", nombre);
 
-		if (validarNombreCompleto(nombre) == 0)
-		{
-			printf("Nombre invalido, debe ingresar un nombre separado por espacio, nombre y apellido con 4 letras minimo cada uno.\n");
+		if (validarNombreCompleto(nombre) == 0){
+			printf("Nombre invalido ingrese un nombre separado por espacio con nombre y apellido con 2 letras minimo cada uno.\n");
 		}
 	}
 	while (validarNombreCompleto(nombre) == 0);
@@ -714,7 +713,7 @@ void mostrarZona(struct Zona* zona, struct Parque* parque)
 			printf("codigo: %d\n", zona->codigo);
 			printf("horario: %s\n", zona->horario);
 			printf("tematica: %s\n", zona->tematica);
-			printf("ocupacion actual: %d\n", zona->ocupacionActual);
+			printf("ocupacion actual: %d\n", calcularOcupacionZona(zona));
 			printf("capacidad maxima: %d\n", zona->capacidadMax);
 			printf("-----------------------------\n");
 			return;
@@ -3550,8 +3549,6 @@ void menuIBCLandia(struct Parque* parque)
 		printf("7. Cerrar el parque por el dia\n");
 		printf("8. Salir del menu\n");
 		printf("Porfavor digite una opcion valida del menu: ");
-
-		scanf(" %d", &num);
 
 		/* validacion para limpiar el buffer*/
 		if (scanf(" %d", &num) != 1){
